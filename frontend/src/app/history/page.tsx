@@ -57,9 +57,9 @@ export default function HistoryPage() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen overflow-hidden bg-gray-50">
       <Sidebar active="history" />
-      <div className="flex-1 p-6">
+      <div className="flex-1 h-screen overflow-y-auto p-6">
         <h2 className="text-lg font-semibold mb-4">Execution History</h2>
         <div className="bg-white border rounded-lg shadow-sm overflow-hidden">
           <table className="w-full text-sm">
