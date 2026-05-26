@@ -35,6 +35,7 @@ export default function HistoryPage() {
     try {
       const res = await fetch(`${API}/executions`);
       const data = await res.json();
+      console.log("Executions fetched:", data);
       setExecutions(data);
     } catch (e) {
       console.error("Failed to fetch executions", e);

@@ -1,6 +1,6 @@
 "use client";
 
-import { Network, Bot, FileText } from "lucide-react";
+import { Home, Network, Bot, FileText } from "lucide-react";
 
 export default function Sidebar({ active }: { active?: string }) {
   const linkClass = (name: string) =>
@@ -14,7 +14,10 @@ export default function Sidebar({ active }: { active?: string }) {
         <Network className="w-6 h-6" /> Orchestrator
       </h1>
       <nav className="flex flex-col gap-2">
-        <a href="/" className={linkClass("agents")}>
+        <a href="/" className={linkClass("home")}>
+          <Home className="w-5 h-5" /> Home
+        </a>
+        <a href="/agents" className={linkClass("agents")}>
           <Bot className="w-5 h-5" /> Agents
         </a>
         <a href="/workflows" className={linkClass("workflows")}>
