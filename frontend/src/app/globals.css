@@ -1,40 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  color-scheme: light;
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --bg:    #0A0C0F;
+  --bg2:   #111418;
+  --bg3:   #181C22;
+  --bg4:   #1E232A;
+
+  --border:  #262C35;
+  --border2: #2E3540;
+
+  --teal:       #1D9E75;
+  --teal2:      #0F6E56;
+  --teal-dim:   #0D3D30;
+  --teal-text:  #4DD6A8;
+
+  --amber:      #EF9F27;
+  --amber-dim:  #412402;
+  --amber-text: #FAC775;
+
+  --coral:      #D85A30;
+  --coral-dim:  #4A1B0C;
+  --coral-text: #F0997B;
+
+  --blue:      #378ADD;
+  --blue-dim:  #042C53;
+  --blue-text: #85B7EB;
+
+  --purple:      #7F77DD;
+  --purple-dim:  #26215C;
+  --purple-text: #AFA9EC;
+
+  --text:  #E8ECF0;
+  --text2: #8A95A3;
+  --text3: #4A5568;
+
+  --font-ui:   'Syne', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-xl: 16px;
+
+  color-scheme: dark;
 }
 
-html {
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { height: 100%; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 13px;
   line-height: 1.5;
-  text-rendering: optimizeLegibility;
+  height: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-*, *::before, *::after {
-  box-sizing: border-box;
-}
+::-webkit-scrollbar          { width: 4px; height: 4px; }
+::-webkit-scrollbar-track    { background: transparent; }
+::-webkit-scrollbar-thumb    { background: var(--border2); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text3); }
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  background-color: #f8fafc;
-  color: #0f172a;
+input, select, textarea, button {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--text);
 }
+input:focus, select:focus, textarea:focus { outline: none; }
 
-button, input, textarea, select {
-  font: inherit;
-}
+@keyframes pulse   { 0%,100%{opacity:1} 50%{opacity:.3} }
+@keyframes slideIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+@keyframes spin    { to{transform:rotate(360deg)} }
+@keyframes blink   { 0%,100%{opacity:1} 50%{opacity:0} }
+@keyframes fadeIn  { from{opacity:0} to{opacity:1} }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-img, picture, video, canvas, svg {
-  display: block;
-  max-width: 100%;
-}
+.anim-in   { animation: slideIn .25s ease both; }
+.anim-fade { animation: fadeIn .2s ease both; }
+.live-dot  { width:7px; height:7px; border-radius:50%; display:inline-block; flex-shrink:0; background:var(--teal); animation:pulse 1.5s infinite; }
