@@ -8,7 +8,7 @@ app = FastAPI(title="AI Agent Orchestrator API")
 # Allow Frontend to communicate with Backend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # In production, change to Next.js localhost URL
+    allow_origins=["*"], #  restrict to Vercel URL later.
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

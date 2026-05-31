@@ -5,7 +5,7 @@ import { Plus, Trash2, Edit2 } from "lucide-react";
 import Sidebar from "../../components/Sidebar";
 import Topbar from "../../components/Topbar";
 
-const API = "http://localhost:8000/api";
+const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
 
 interface Agent {
   _id: string;

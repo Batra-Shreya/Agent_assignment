@@ -20,7 +20,7 @@ import "reactflow/dist/style.css";
 import { Plus, Save, Bot, Trash2, ChevronDown } from "lucide-react";
 import Sidebar from "../../components/Sidebar";
 
-const API = "http://localhost:8000/api";
+const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
 
 // ── Node with optional run-status badge ───────────────────────────────────────
 interface NodeData { label: string; role: string; agentId?: string; runStatus?: "running" | "done" | "error" }
