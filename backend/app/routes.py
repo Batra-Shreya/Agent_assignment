@@ -55,7 +55,7 @@ def update_agent(agent_id: str, agent: AgentModel):
 
 @router.delete("/agents/{agent_id}")
 def delete_agent(agent_id: str):
-    result = agents_collection.delete_one({"_id": _oid(agent_id)})
+    result = get_collection("agents").delete_one({"_id": _oid(agent_id)})
     if result.deleted_count == 0:
         raise HTTPException(404, "Agent not found")
     return {"status": "Agent deleted"}
@@ -87,7 +87,7 @@ def update_workflow(workflow_id: str, workflow: WorkflowModel):
 
 @router.delete("/workflows/{workflow_id}")
 def delete_workflow(workflow_id: str):
-    result = workflows_collection.delete_one({"_id": _oid(workflow_id)})
+    result = get_collection("workflows").delete_one({"_id": _oid(workflow_id)})
     if result.deleted_count == 0:
         raise HTTPException(404, "Workflow not found")
     return {"status": "Workflow deleted"}
