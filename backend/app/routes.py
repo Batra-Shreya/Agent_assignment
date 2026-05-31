@@ -9,7 +9,7 @@ from bson import ObjectId
 from bson.errors import InvalidId
 from pydantic import BaseModel
 from app.models import AgentModel, WorkflowModel
-from app.database import agents_collection, workflows_collection, messages_collection, executions_collection
+from app.database import get_collection
 from app.engine import execute_workflow, run_logs, run_store
 
 router = APIRouter()
@@ -32,23 +32,23 @@ def _serialize(doc: dict) -> dict:
 
 @router.post("/agents")
 def create_agent(agent: AgentModel):
-    result = agents_collection.insert_one(agent.model_dump())
+    result = get_collection("agents").insert_one(agent.model_dump())
     return {"id": str(result.inserted_id), "status": "Agent created"}
 
 @router.get("/agents")
 def get_agents():
-    return [_serialize(doc) for doc in agents_collection.find()]
+    return [_serialize(doc) for doc in get_collection("agents").find()]
 
 @router.get("/agents/{agent_id}")
 def get_agent(agent_id: str):
-    doc = agents_collection.find_one({"_id": _oid(agent_id)})
+    doc = get_collection("agents").find_one({"_id": _oid(agent_id)})
     if not doc:
         raise HTTPException(404, "Agent not found")
     return _serialize(doc)
 
 @router.put("/agents/{agent_id}")
 def update_agent(agent_id: str, agent: AgentModel):
-    result = agents_collection.update_one({"_id": _oid(agent_id)}, {"$set": agent.model_dump()})
+    result = get_collection("agents").update_one({"_id": _oid(agent_id)}, {"$set": agent.model_dump()})
     if result.matched_count == 0:
         raise HTTPException(404, "Agent not found")
     return {"id": agent_id, "status": "Agent updated"}
@@ -64,23 +64,23 @@ def delete_agent(agent_id: str):
 
 @router.post("/workflows")
 def create_workflow(workflow: WorkflowModel):
-    result = workflows_collection.insert_one(workflow.model_dump())
+    result = get_collection("workflows").insert_one(workflow.model_dump())
     return {"id": str(result.inserted_id), "status": "Workflow created"}
 
 @router.get("/workflows")
 def get_workflows():
-    return [_serialize(doc) for doc in workflows_collection.find()]
+    return [_serialize(doc) for doc in get_collection("workflows").find()]
 
 @router.get("/workflows/{workflow_id}")
 def get_workflow(workflow_id: str):
-    doc = workflows_collection.find_one({"_id": _oid(workflow_id)})
+    doc = get_collection("workflows").find_one({"_id": _oid(workflow_id)})
     if not doc:
         raise HTTPException(404, "Workflow not found")
     return _serialize(doc)
 
 @router.put("/workflows/{workflow_id}")
 def update_workflow(workflow_id: str, workflow: WorkflowModel):
-    result = workflows_collection.update_one({"_id": _oid(workflow_id)}, {"$set": workflow.model_dump()})
+    result = get_collection("workflows").update_one({"_id": _oid(workflow_id)}, {"$set": workflow.model_dump()})
     if result.matched_count == 0:
         raise HTTPException(404, "Workflow not found")
     return {"id": workflow_id, "status": "Workflow updated"}
@@ -115,7 +115,7 @@ def _background_execute(run_id: str, workflow_id: str, user_prompt: str):
             "timestamp": datetime.utcnow(),
             "run_id": run_id,
         }
-        exec_result = executions_collection.insert_one(exec_doc)
+        exec_result = get_collection("executions").insert_one(exec_doc)
         run_store[run_id] = {
             "status": "done",
             "result": output,
@@ -125,7 +125,7 @@ def _background_execute(run_id: str, workflow_id: str, user_prompt: str):
     except Exception as e:
         err_msg = str(e)
         try:
-            executions_collection.insert_one({
+            get_collection("executions").insert_one({
                 "workflow_id": workflow_id,
                 "user_prompt": user_prompt,
                 "output": err_msg,
@@ -183,11 +183,11 @@ async def stream_run_logs(run_id: str):
 
 @router.get("/executions")
 def list_executions():
-    return [_serialize(doc) for doc in executions_collection.find().sort("timestamp", -1)]
+    return [_serialize(doc) for doc in get_collection("executions").find().sort("timestamp", -1)]
 
 @router.get("/executions/{execution_id}")
 def get_execution(execution_id: str):
-    doc = executions_collection.find_one({"_id": _oid(execution_id)})
+    doc = get_collection("executions").find_one({"_id": _oid(execution_id)})
     if not doc:
         raise HTTPException(404, "Execution not found")
     return _serialize(doc)
@@ -196,14 +196,14 @@ def get_execution(execution_id: str):
 
 @router.get("/messages/{workflow_id}")
 def get_workflow_messages(workflow_id: str):
-    return [_serialize(doc) for doc in messages_collection.find({"workflow_id": workflow_id})]
+    return [_serialize(doc) for doc in get_collection("messages").find({"workflow_id": workflow_id})]
 
 # ── Health ────────────────────────────────────────────────────────────────────
 
 @router.get("/health")
 def health():
     try:
-        agents_collection.database.client.admin.command("ping")
+        get_collection("agents").database.client.admin.command("ping")
         db_ok = True
     except Exception:
         db_ok = False
